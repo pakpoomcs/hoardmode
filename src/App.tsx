@@ -19,7 +19,7 @@ const NAV_ITEMS = [
 function Sidebar() {
   return (
     <nav className="sidebar">
-      <div className="sidebar__brand">HoardMode</div>
+      <div className="sidebar__brand">Hoard<span>Mode</span></div>
       <ul className="sidebar__nav">
         {NAV_ITEMS.map(({ to, label }) => (
           <li key={to}>

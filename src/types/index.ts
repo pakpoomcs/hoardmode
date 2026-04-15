@@ -15,6 +15,7 @@ export interface Animus {
   primaryRole: string;
   latticePriority: string;
   isShadowPrintRequired: boolean;
+  imageFile: string;
 }
 
 // ─── Boss ─────────────────────────────────────────────────────────────────────
@@ -25,10 +26,13 @@ export interface Boss {
   id: string;
   name: string;
   affinity: Affinity;
+  difficultyTiers: string[];
   mechanics: string[];
   immuneToDoT: boolean;
   requiredUtility: RequiredUtility;
   recommendedCounters: string[];
+  advantageAffinity: Affinity;
+  notes: string;
 }
 
 // ─── Modules ──────────────────────────────────────────────────────────────────
