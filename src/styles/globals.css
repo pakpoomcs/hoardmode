@@ -426,39 +426,39 @@ html, body, #root { height: 100%; }
 .filter-btn--Constant.filter-btn--active { background: rgba(176,176,204,.08); border-color: rgba(176,176,204,.2); }
 .filter-btn--Disorder.filter-btn--active { background: rgba(176,110,240,.12); border-color: rgba(176,110,240,.3); }
 
-/* ─── Animus Detail Panel (inline row-break, horizontal layout) ────────────── */
+/* ─── Trading Card ─────────────────────────────────────────────────────────── */
 
-@keyframes detailSlideDown {
-  from { opacity: 0; transform: translateY(-6px); }
-  to   { opacity: 1; transform: translateY(0); }
+@keyframes cardDrop {
+  from { opacity: 0; transform: translateY(-12px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0)     scale(1); }
 }
 
-/* Wrapper sits in the grid spanning all columns */
+/* Grid row-break wrapper */
 .animus-detail-wrap {
   grid-column: 1 / -1;
-  animation: detailSlideDown 0.22s cubic-bezier(.4,0,.2,1) both;
+  animation: cardDrop 0.26s cubic-bezier(.3,1.1,.4,1) both;
 }
 
-.animus-detail {
-  background: var(--bg-surf);
-  border: 1px solid var(--border-md);
-  border-radius: 16px;
-  overflow: hidden;
+/* Stage: ambient glow behind the card */
+.card-stage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 20px;
   position: relative;
-  /* Subtle top accent line matching the selected card's tier color */
-  border-top: 2px solid var(--accent);
+  background:
+    radial-gradient(ellipse 340px 260px at 50% 50%, var(--aff-bg, rgba(124,106,247,.08)), transparent);
 }
 
-.animus-detail__close {
+.card-stage__close {
   position: absolute;
   top: 12px;
-  right: 12px;
-  z-index: 10;
-  background: var(--bg-pop);
+  right: 16px;
+  background: var(--bg-raised);
   border: 1px solid var(--border-md);
   border-radius: 50%;
-  width: 26px;
-  height: 26px;
+  width: 28px;
+  height: 28px;
   color: var(--tx-2);
   font-size: 11px;
   cursor: pointer;
@@ -466,152 +466,326 @@ html, body, #root { height: 100%; }
   align-items: center;
   justify-content: center;
   transition: background 0.12s, color 0.12s;
+  z-index: 10;
 }
 
-.animus-detail__close:hover { background: var(--bg-overlay, #22223a); color: var(--tx-1); }
+.card-stage__close:hover { background: var(--bg-pop); color: var(--tx-1); }
 
-/* Horizontal inner layout */
-.animus-detail__inner {
-  display: flex;
-  gap: 0;
-}
-
-/* Left — portrait */
-.animus-detail__portrait-wrap {
+/* ── Card shell ─────────────────────────────────────────────────────────── */
+.trading-card {
+  /* 9:16 */
+  width: 270px;
+  height: 480px;
+  border-radius: 18px;
   position: relative;
-  width: 160px;
+  overflow: hidden;
+  cursor: default;
+  will-change: transform;
+
+  /* Layered background: affinity tint at top → deep dark */
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--aff-primary, #7c6af7) 18%, #0b0b18) 0%,
+      #0e0e1c 35%,
+      #0a0a14 100%
+    );
+
+  /* Outer glow + border */
+  box-shadow:
+    0 0 0 2px var(--aff-primary, #7c6af7),
+    0 0 28px var(--aff-glow, rgba(124,106,247,.45)),
+    0 24px 60px rgba(0,0,0,.8);
+
+  /* Inner highlight border */
+  outline: 1px solid rgba(255,255,255,.06);
+  outline-offset: -3px;
+
+  display: flex;
+  flex-direction: column;
+}
+
+/* Holographic shine overlay (follows mouse) */
+.trading-card__shine {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 20;
+  background: radial-gradient(
+    circle at var(--shine-x, 50%) var(--shine-y, 50%),
+    rgba(255,255,255,.13) 0%,
+    rgba(255,255,255,.04) 35%,
+    transparent 65%
+  );
+  mix-blend-mode: screen;
+}
+
+/* ── Header ─────────────────────────────────────────────────────────────── */
+.trading-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 11px 13px 9px;
+  background: rgba(0,0,0,.25);
+  border-bottom: 1px solid rgba(255,255,255,.06);
   flex-shrink: 0;
+}
+
+.trading-card__card-name {
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: var(--aff-secondary, #fff);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 180px;
+  text-shadow: 0 0 12px var(--aff-glow, transparent);
+}
+
+.trading-card__header-right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.trading-card__aff-icon {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 4px var(--aff-glow, transparent));
+}
+
+/* ── Art frame ──────────────────────────────────────────────────────────── */
+.trading-card__art-frame {
+  position: relative;
+  margin: 8px 10px 0;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1.5px solid rgba(255,255,255,.12);
+  box-shadow:
+    inset 0 0 16px rgba(0,0,0,.6),
+    0 0 0 1px rgba(255,255,255,.04);
+  flex-shrink: 0;
+  height: 212px;
   background: var(--bg-raised);
 }
 
-.animus-detail__portrait {
-  width: 160px;
-  height: 200px;
+.trading-card__art {
+  width: 100%;
+  height: 100%;
   object-fit: cover;
   object-position: top center;
   display: block;
 }
 
-.animus-detail__portrait-gradient {
+/* Corner ornaments on art frame */
+.trading-card__art-corner {
   position: absolute;
-  inset: 0;
-  background: linear-gradient(to right, transparent 60%, var(--bg-surf));
+  width: 12px;
+  height: 12px;
+  border-color: var(--aff-secondary, rgba(255,255,255,.5));
+  border-style: solid;
+  opacity: 0.7;
 }
 
-.animus-detail__portrait-badges {
-  position: absolute;
-  bottom: 10px;
-  left: 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
+.trading-card__art-corner--tl { top: 5px;    left: 5px;    border-width: 1.5px 0 0 1.5px; border-radius: 2px 0 0 0; }
+.trading-card__art-corner--tr { top: 5px;    right: 5px;   border-width: 1.5px 1.5px 0 0; border-radius: 0 2px 0 0; }
+.trading-card__art-corner--bl { bottom: 5px; left: 5px;    border-width: 0 0 1.5px 1.5px; border-radius: 0 0 0 2px; }
+.trading-card__art-corner--br { bottom: 5px; right: 5px;   border-width: 0 1.5px 1.5px 0; border-radius: 0 0 2px 0; }
 
-/* Right — info */
-.animus-detail__info {
-  flex: 1;
-  padding: 18px 48px 18px 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  min-width: 0;
-}
-
-.animus-detail__header {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-.animus-detail__name {
-  font-size: 22px;
-  font-weight: 900;
-  letter-spacing: -0.5px;
-  line-height: 1;
-}
-
-/* Stats grid */
-.animus-detail__stats {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
-}
-
-.animus-detail__stat {
-  background: var(--bg-raised);
-  border-radius: 10px;
-  padding: 10px 12px;
-  min-width: 0;
-}
-
-.animus-detail__stat-label {
-  font-size: 10px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.8px;
-  color: var(--tx-3);
-  margin-bottom: 5px;
-}
-
-.animus-detail__stat-value {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--tx-1);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-/* Combat row */
-.animus-detail__combat {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.animus-detail__affinity-row {
+/* ── Tier / Stars bar ───────────────────────────────────────────────────── */
+.trading-card__tier-bar {
   display: flex;
   align-items: center;
   gap: 7px;
-  flex-wrap: wrap;
-  border-radius: 10px;
-  padding: 8px 12px;
+  padding: 7px 12px 5px;
+  flex-shrink: 0;
 }
 
-.animus-detail__affinity-row--advantage    { background: rgba(76,202,111,.07);  border: 1px solid rgba(76,202,111,.18); }
-.animus-detail__affinity-row--disadvantage { background: rgba(224,82,82,.07);   border: 1px solid rgba(224,82,82,.18); }
+.trading-card__stars { display: flex; gap: 2px; }
 
-.animus-detail__affinity-row-badge {
+.trading-card__star {
+  font-size: 10px;
+  color: var(--tx-3);
+  transition: color 0.1s;
+}
+
+.trading-card__star--on {
+  color: #f5c842;
+  text-shadow: 0 0 6px rgba(245,200,66,.7);
+}
+
+.trading-card__role-tag {
+  font-size: 9px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 20px;
+  background: rgba(255,255,255,.07);
+  border: 1px solid rgba(255,255,255,.1);
+  color: var(--tx-2);
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 130px;
+}
+
+/* ── Divider ────────────────────────────────────────────────────────────── */
+.trading-card__divider {
+  height: 1px;
+  margin: 0 10px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--aff-primary, rgba(255,255,255,.15)) 30%,
+    var(--aff-primary, rgba(255,255,255,.15)) 70%,
+    transparent
+  );
+  opacity: 0.4;
+  flex-shrink: 0;
+}
+
+/* ── Stats body ─────────────────────────────────────────────────────────── */
+.trading-card__body {
+  padding: 8px 12px 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.trading-card__stat-row {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.trading-card__stat-label {
   font-size: 9px;
   font-weight: 800;
-  padding: 2px 6px;
-  border-radius: 4px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--aff-primary, var(--tx-3));
+  width: 26px;
+  flex-shrink: 0;
+}
+
+.trading-card__spd-bar-wrap { flex: 1; }
+
+.trading-card__spd-bar {
+  height: 5px;
+  background: rgba(255,255,255,.08);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.trading-card__spd-fill {
+  height: 100%;
+  border-radius: 3px;
+  background: linear-gradient(90deg, var(--aff-primary, #7c6af7), var(--aff-secondary, #a89fff));
+  box-shadow: 0 0 6px var(--aff-glow, transparent);
+}
+
+.trading-card__spd-value {
+  font-size: 12px;
+  font-weight: 800;
+  width: 26px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.trading-card__spd-gap {
+  font-size: 9px;
+  color: var(--tx-3);
+  white-space: nowrap;
+}
+
+.trading-card__lattice-text {
+  font-size: 10px;
+  color: var(--tx-2);
+  line-height: 1.4;
+  flex: 1;
+}
+
+/* ── Affinity combat ────────────────────────────────────────────────────── */
+.trading-card__combat {
+  padding: 6px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  flex-shrink: 0;
+}
+
+.trading-card__combat-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  padding: 5px 8px;
+  border-radius: 7px;
+}
+
+.trading-card__combat-row--adv { background: rgba(76,202,111,.08);  border: 1px solid rgba(76,202,111,.2); }
+.trading-card__combat-row--dis { background: rgba(224,82,82,.08);   border: 1px solid rgba(224,82,82,.2); }
+
+.trading-card__combat-badge {
+  font-size: 8px;
+  font-weight: 900;
+  padding: 1px 5px;
+  border-radius: 3px;
   letter-spacing: 0.5px;
 }
 
-.animus-detail__affinity-row-badge--adv { background: rgba(76,202,111,.25);  color: var(--c-hollow); }
-.animus-detail__affinity-row-badge--dis { background: rgba(224,82,82,.25);   color: var(--c-reason); }
+.trading-card__combat-badge--adv { background: rgba(76,202,111,.3);  color: var(--c-hollow); }
+.trading-card__combat-badge--dis { background: rgba(224,82,82,.3);   color: var(--c-reason); }
 
-.animus-detail__affinity-modifiers {
-  display: flex;
-  gap: 5px;
-}
-
-.animus-detail__affinity-modifiers span {
-  font-size: 11px;
-  font-weight: 600;
-  padding: 2px 7px;
-  border-radius: 20px;
-  background: var(--bg-raised);
-  color: var(--tx-2);
-  border: 1px solid var(--border-md);
-}
-
-.animus-detail__inferno-warning {
-  font-size: 11px;
-  color: var(--c-reason);
+.trading-card__combat-vs {
+  font-size: 10px;
   font-weight: 700;
+  color: var(--tx-1);
+}
+
+.trading-card__combat-mod {
+  font-size: 9px;
+  font-weight: 600;
+  color: var(--tx-2);
+  padding: 1px 5px;
+  background: rgba(255,255,255,.05);
+  border-radius: 4px;
+  border: 1px solid rgba(255,255,255,.07);
+}
+
+.trading-card__combat-mod--inferno { color: var(--c-reason); border-color: rgba(224,82,82,.25); }
+
+/* ── Footer ─────────────────────────────────────────────────────────────── */
+.trading-card__footer {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px 10px;
+  border-top: 1px solid rgba(255,255,255,.05);
+}
+
+.trading-card__sp {
+  font-size: 9px;
+  font-weight: 800;
+  color: #f5c842;
+  letter-spacing: 0.3px;
+  text-shadow: 0 0 8px rgba(245,200,66,.5);
+}
+
+.trading-card__affinity-text {
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--aff-primary, var(--tx-3));
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  opacity: 0.7;
 }
 
 /* ─── Boss Card ────────────────────────────────────────────────────────────── */
