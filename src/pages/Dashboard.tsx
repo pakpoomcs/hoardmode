@@ -214,48 +214,38 @@ export default function Dashboard() {
         )}
       </div>
 
-      {/* ── Roster grid + detail panel ───────────────────────────────────── */}
-      <div style={{ display: 'flex', gap: 14, alignItems: 'flex-start' }}>
-
-        {/* Grid */}
-        <div style={{ flex: 1, minWidth: 0 }}>
-          {filtered.length === 0 ? (
-            <div style={{ textAlign: 'center', padding: '60px 0', color: 'var(--tx-3)', fontSize: 14 }}>
-              No units match your filters.
-            </div>
-          ) : (
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(84px, 1fr))',
-              gap: 8,
-            }}>
-              {filtered.map((a) => (
-                <AnimusCard
-                  key={a.id}
-                  animus={a}
-                  showTier
-                  onClick={handleCardClick}
-                  selected={selected?.id === a.id}
-                />
-              ))}
-            </div>
-          )}
+      {/* ── Roster grid with inline detail panel ────────────────────────── */}
+      {filtered.length === 0 ? (
+        <div style={{ textAlign: 'center', padding: '60px 0', color: 'var(--tx-3)', fontSize: 14 }}>
+          No units match your filters.
         </div>
-
-        {/* Detail panel — transitions open/closed */}
-        <div
-          className="detail-panel-wrap"
-          style={{ width: selected ? 280 : 0 }}
-        >
-          {panelAnimus && (
-            <AnimusDetail
-              animus={panelAnimus}
-              onClose={() => setSelected(null)}
-            />
-          )}
+      ) : (
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(84px, 1fr))',
+          gap: 8,
+        }}>
+          {filtered.map((a) => (
+            <>
+              <AnimusCard
+                key={a.id}
+                animus={a}
+                showTier
+                onClick={handleCardClick}
+                selected={selected?.id === a.id}
+              />
+              {selected?.id === a.id && panelAnimus && (
+                <div key={`detail-${a.id}`} className="animus-detail-wrap">
+                  <AnimusDetail
+                    animus={panelAnimus}
+                    onClose={() => setSelected(null)}
+                  />
+                </div>
+              )}
+            </>
+          ))}
         </div>
-
-      </div>
+      )}
     </div>
   );
 }

@@ -426,48 +426,67 @@ html, body, #root { height: 100%; }
 .filter-btn--Constant.filter-btn--active { background: rgba(176,176,204,.08); border-color: rgba(176,176,204,.2); }
 .filter-btn--Disorder.filter-btn--active { background: rgba(176,110,240,.12); border-color: rgba(176,110,240,.3); }
 
-/* ─── Animus Detail Panel ──────────────────────────────────────────────────── */
+/* ─── Animus Detail Panel (inline row-break, horizontal layout) ────────────── */
+
+@keyframes detailSlideDown {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Wrapper sits in the grid spanning all columns */
+.animus-detail-wrap {
+  grid-column: 1 / -1;
+  animation: detailSlideDown 0.22s cubic-bezier(.4,0,.2,1) both;
+}
+
 .animus-detail {
   background: var(--bg-surf);
   border: 1px solid var(--border-md);
   border-radius: 16px;
   overflow: hidden;
   position: relative;
+  /* Subtle top accent line matching the selected card's tier color */
+  border-top: 2px solid var(--accent);
 }
 
 .animus-detail__close {
   position: absolute;
-  top: 10px;
-  right: 10px;
+  top: 12px;
+  right: 12px;
   z-index: 10;
-  background: rgba(0,0,0,.55);
-  border: none;
+  background: var(--bg-pop);
+  border: 1px solid var(--border-md);
   border-radius: 50%;
   width: 26px;
   height: 26px;
-  color: #fff;
-  font-size: 12px;
+  color: var(--tx-2);
+  font-size: 11px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.12s;
+  transition: background 0.12s, color 0.12s;
 }
 
-.animus-detail__close:hover { background: rgba(0,0,0,.8); }
+.animus-detail__close:hover { background: var(--bg-overlay, #22223a); color: var(--tx-1); }
 
-/* Portrait */
+/* Horizontal inner layout */
+.animus-detail__inner {
+  display: flex;
+  gap: 0;
+}
+
+/* Left — portrait */
 .animus-detail__portrait-wrap {
   position: relative;
-  width: 100%;
-  aspect-ratio: 3 / 4;
-  overflow: hidden;
+  width: 160px;
+  flex-shrink: 0;
   background: var(--bg-raised);
 }
 
 .animus-detail__portrait {
-  width: 100%;
-  height: 100%;
+  width: 160px;
+  height: 200px;
   object-fit: cover;
   object-position: top center;
   display: block;
@@ -476,51 +495,54 @@ html, body, #root { height: 100%; }
 .animus-detail__portrait-gradient {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top, rgba(10,10,20,.95) 0%, rgba(10,10,20,.4) 40%, transparent 70%);
+  background: linear-gradient(to right, transparent 60%, var(--bg-surf));
 }
 
-.animus-detail__name-block {
+.animus-detail__portrait-badges {
   position: absolute;
-  bottom: 14px;
-  left: 14px;
-  right: 14px;
-}
-
-.animus-detail__name {
-  font-size: 20px;
-  font-weight: 900;
-  letter-spacing: -0.5px;
-  line-height: 1.15;
-  color: #fff;
-  margin-bottom: 8px;
-  text-shadow: 0 2px 8px rgba(0,0,0,.6);
-}
-
-.animus-detail__badges {
+  bottom: 10px;
+  left: 10px;
   display: flex;
-  align-items: center;
-  gap: 7px;
-  flex-wrap: wrap;
+  flex-direction: column;
+  gap: 5px;
 }
 
-/* Body */
-.animus-detail__body {
-  padding: 16px;
+/* Right — info */
+.animus-detail__info {
+  flex: 1;
+  padding: 18px 48px 18px 20px;
   display: flex;
   flex-direction: column;
   gap: 14px;
+  min-width: 0;
 }
 
-.animus-detail__row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+.animus-detail__header {
+  display: flex;
+  align-items: center;
   gap: 10px;
+  flex-wrap: wrap;
+}
+
+.animus-detail__name {
+  font-size: 22px;
+  font-weight: 900;
+  letter-spacing: -0.5px;
+  line-height: 1;
+}
+
+/* Stats grid */
+.animus-detail__stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
 }
 
 .animus-detail__stat {
   background: var(--bg-raised);
   border-radius: 10px;
   padding: 10px 12px;
+  min-width: 0;
 }
 
 .animus-detail__stat-label {
@@ -533,88 +555,53 @@ html, body, #root { height: 100%; }
 }
 
 .animus-detail__stat-value {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
   color: var(--tx-1);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.animus-detail__field-label {
-  font-size: 10px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.8px;
-  color: var(--tx-3);
-  margin-bottom: 5px;
-}
-
-.animus-detail__field-value {
-  font-size: 13px;
-  color: var(--tx-2);
-  line-height: 1.5;
-}
-
-.animus-detail__sp-banner {
-  font-size: 12px;
-  color: var(--tx-2);
-  padding: 8px 12px;
-  background: rgba(245,200,66,.07);
-  border: 1px solid rgba(245,200,66,.2);
-  border-radius: 8px;
-}
-
-/* Affinity combat */
-.animus-detail__affinity-section {
-  border-top: 1px solid var(--border);
-  padding-top: 14px;
-}
-
-.animus-detail__affinity-row {
-  border-radius: 10px;
-  padding: 10px 12px;
-  margin-bottom: 8px;
-}
-
-.animus-detail__affinity-row--advantage {
-  background: rgba(76,202,111,.07);
-  border: 1px solid rgba(76,202,111,.18);
-}
-
-.animus-detail__affinity-row--disadvantage {
-  background: rgba(224,82,82,.07);
-  border: 1px solid rgba(224,82,82,.18);
-}
-
-.animus-detail__affinity-row-header {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--tx-2);
-  margin-bottom: 7px;
-}
-
-.animus-detail__affinity-row-badge {
-  font-size: 9px;
-  font-weight: 800;
-  padding: 1px 6px;
-  border-radius: 4px;
-  letter-spacing: 0.5px;
-}
-
-.animus-detail__affinity-row-badge--adv { background: rgba(76,202,111,.25); color: var(--c-hollow); }
-.animus-detail__affinity-row-badge--dis { background: rgba(224,82,82,.25);  color: var(--c-reason); }
-
-.animus-detail__affinity-modifiers {
+/* Combat row */
+.animus-detail__combat {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
 }
 
+.animus-detail__affinity-row {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  flex-wrap: wrap;
+  border-radius: 10px;
+  padding: 8px 12px;
+}
+
+.animus-detail__affinity-row--advantage    { background: rgba(76,202,111,.07);  border: 1px solid rgba(76,202,111,.18); }
+.animus-detail__affinity-row--disadvantage { background: rgba(224,82,82,.07);   border: 1px solid rgba(224,82,82,.18); }
+
+.animus-detail__affinity-row-badge {
+  font-size: 9px;
+  font-weight: 800;
+  padding: 2px 6px;
+  border-radius: 4px;
+  letter-spacing: 0.5px;
+}
+
+.animus-detail__affinity-row-badge--adv { background: rgba(76,202,111,.25);  color: var(--c-hollow); }
+.animus-detail__affinity-row-badge--dis { background: rgba(224,82,82,.25);   color: var(--c-reason); }
+
+.animus-detail__affinity-modifiers {
+  display: flex;
+  gap: 5px;
+}
+
 .animus-detail__affinity-modifiers span {
   font-size: 11px;
   font-weight: 600;
-  padding: 2px 8px;
+  padding: 2px 7px;
   border-radius: 20px;
   background: var(--bg-raised);
   color: var(--tx-2);
@@ -622,22 +609,9 @@ html, body, #root { height: 100%; }
 }
 
 .animus-detail__inferno-warning {
-  margin-top: 7px;
   font-size: 11px;
   color: var(--c-reason);
-  font-weight: 600;
-}
-
-/* ─── Detail panel wrapper (handles open/close transition) ──────────────────── */
-.detail-panel-wrap {
-  flex-shrink: 0;
-  overflow: hidden;
-  transition: width 0.28s cubic-bezier(.4,0,.2,1);
-  position: sticky;
-  top: 0;
-  align-self: flex-start;
-  max-height: calc(100vh - 72px);
-  overflow-y: auto;
+  font-weight: 700;
 }
 
 /* ─── Boss Card ────────────────────────────────────────────────────────────── */
