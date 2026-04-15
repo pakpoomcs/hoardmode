@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react';
 import animusData from '@/data/animus.json';
 import type { Animus, Affinity, Tier } from '@/types';
 import { AnimusCard } from '@/components/AnimusCard';
+import { AnimusDetail } from '@/components/AnimusDetail';
 import { FARM_SCHEDULE, SPEED_BREAKPOINTS } from '@/data/constants';
 import modulesData from '@/data/modules.json';
 
@@ -57,6 +58,18 @@ export default function Dashboard() {
   const [affinityFilter, setAffinityFilter] = useState<Affinity | null>(null);
   const [tierFilter,     setTierFilter]     = useState<Tier | null>(null);
   const [speedFilter,    setSpeedFilter]    = useState<number | null>(null);
+  const [selected,       setSelected]       = useState<Animus | null>(null);
+  // keep last animus so the panel content doesn't vanish during close transition
+  const [panelAnimus,    setPanelAnimus]    = useState<Animus | null>(null);
+
+  function handleCardClick(a: Animus) {
+    if (selected?.id === a.id) {
+      setSelected(null);          // toggle off
+    } else {
+      setSelected(a);
+      setPanelAnimus(a);
+    }
+  }
 
   const filtered = useMemo(() => allAnimus.filter((a) => {
     if (affinityFilter && a.affinity !== affinityFilter) return false;
@@ -201,22 +214,48 @@ export default function Dashboard() {
         )}
       </div>
 
-      {/* ── Roster grid ──────────────────────────────────────────────────── */}
-      {filtered.length === 0 ? (
-        <div style={{ textAlign: 'center', padding: '60px 0', color: 'var(--tx-3)', fontSize: 14 }}>
-          No units match your filters.
+      {/* ── Roster grid + detail panel ───────────────────────────────────── */}
+      <div style={{ display: 'flex', gap: 14, alignItems: 'flex-start' }}>
+
+        {/* Grid */}
+        <div style={{ flex: 1, minWidth: 0 }}>
+          {filtered.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: '60px 0', color: 'var(--tx-3)', fontSize: 14 }}>
+              No units match your filters.
+            </div>
+          ) : (
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fill, minmax(84px, 1fr))',
+              gap: 8,
+            }}>
+              {filtered.map((a) => (
+                <AnimusCard
+                  key={a.id}
+                  animus={a}
+                  showTier
+                  onClick={handleCardClick}
+                  selected={selected?.id === a.id}
+                />
+              ))}
+            </div>
+          )}
         </div>
-      ) : (
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(84px, 1fr))',
-          gap: 8,
-        }}>
-          {filtered.map((a) => (
-            <AnimusCard key={a.id} animus={a} showTier />
-          ))}
+
+        {/* Detail panel — transitions open/closed */}
+        <div
+          className="detail-panel-wrap"
+          style={{ width: selected ? 280 : 0 }}
+        >
+          {panelAnimus && (
+            <AnimusDetail
+              animus={panelAnimus}
+              onClose={() => setSelected(null)}
+            />
+          )}
         </div>
-      )}
+
+      </div>
     </div>
   );
 }
