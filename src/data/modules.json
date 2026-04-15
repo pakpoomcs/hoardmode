@@ -1,0 +1,56 @@
+[
+  {
+    "id": "swift-rush",
+    "name": "Swift Rush",
+    "primaryStats": ["SPD", "Initiative"],
+    "idealRole": "Opener / Support",
+    "pvpDetail": "Meta-essential for Turn 1 priority. Any unit targeting the 185+ SPD breakpoint needs this set.",
+    "farmDays": [3, 6],
+    "farmDayLabel": "Wed / Sat"
+  },
+  {
+    "id": "revelation",
+    "name": "Revelation",
+    "primaryStats": ["ATK%", "DMG Amp"],
+    "idealRole": "Burst DPS",
+    "pvpDetail": "Higher value in Inferno content. Pure damage ceiling — no sustain trade-off.",
+    "farmDays": [1, 4],
+    "farmDayLabel": "Mon / Thu"
+  },
+  {
+    "id": "wellspring",
+    "name": "Wellspring",
+    "primaryStats": ["HP%", "Sustain"],
+    "idealRole": "Tank / Healer",
+    "pvpDetail": "Ideal for Tiamat and Lingluo. The HP% stat also scales Sania Vengeful Thorn's DoT output.",
+    "farmDays": [2, 5],
+    "farmDayLabel": "Tue / Fri"
+  },
+  {
+    "id": "bulwark",
+    "name": "Bulwark",
+    "primaryStats": ["DEF%", "Survival"],
+    "idealRole": "Tank",
+    "pvpDetail": "Essential for Rahu's DEF-scaling damage nodes. Do not run Rahu without full Bulwark.",
+    "farmDays": [2, 5],
+    "farmDayLabel": "Tue / Fri"
+  },
+  {
+    "id": "crit",
+    "name": "Crit",
+    "primaryStats": ["Crit Rate", "Crit DMG"],
+    "idealRole": "DPS",
+    "pvpDetail": "Foundational for Gray and Lian. Hits the 85% effective Crit Rate threshold with 2 substats invested.",
+    "farmDays": [1, 4],
+    "farmDayLabel": "Mon / Thu"
+  },
+  {
+    "id": "harvest",
+    "name": "Harvest",
+    "primaryStats": ["ATK%", "DEF Pen"],
+    "idealRole": "PvP Specialist",
+    "pvpDetail": "100% focus on Defense Penetration. Best-in-slot for Arena and Hyperlink PvP modes only.",
+    "farmDays": [0],
+    "farmDayLabel": "Sun (Flex)"
+  }
+]

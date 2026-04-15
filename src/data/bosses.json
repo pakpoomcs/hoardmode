@@ -1,0 +1,50 @@
+[
+  {
+    "id": "aurora",
+    "name": "Aurora",
+    "affinity": "Reason",
+    "difficultyTiers": ["Hell III", "Hell IV", "Inferno"],
+    "mechanics": [
+      "DoT Immune — all poison, burn, and bleed effects deal 0 damage",
+      "Radiant Pulse — AoE attack that reduces all buffs by 1 stack",
+      "Overdrive — enters a powered state at 50% HP, gaining +30% SPD"
+    ],
+    "immuneToDoT": true,
+    "requiredUtility": "Burst",
+    "recommendedCounters": ["diting", "viper"],
+    "advantageAffinity": "Hollow",
+    "notes": "Avoid DoT-reliant units entirely. Burst DPS windows occur between Radiant Pulse casts — time your damage dealers accordingly."
+  },
+  {
+    "id": "dokidoki",
+    "name": "DokiDoki",
+    "affinity": "Constant",
+    "difficultyTiers": ["Hell III", "Hell IV", "Inferno"],
+    "mechanics": [
+      "Damage Reduction Barrier — 50% damage reduction buff active on turn start",
+      "Pulse Shield — re-applies barrier every 2 turns if not dispelled",
+      "Heartbeat Surge — deals heavy single-target damage to highest-ATK unit"
+    ],
+    "immuneToDoT": false,
+    "requiredUtility": "CC",
+    "recommendedCounters": ["kraken", "kazuyo-the-reverie"],
+    "advantageAffinity": "Disorder",
+    "notes": "The 50% Damage Reduction barrier must be stripped before dealing meaningful damage. Kraken (Freeze) or Kazuyo the Reverie (Slumber) will halt the boss and remove the buff. CC must land on turn 1 or the barrier resets."
+  },
+  {
+    "id": "terrormaton",
+    "name": "Terrormaton",
+    "affinity": "Odd",
+    "difficultyTiers": ["Hell IV", "Inferno"],
+    "mechanics": [
+      "Iron Plating — immune to Def Break while above 70% HP",
+      "Mech Stampede — AoE charge that applies SPD- to all party members",
+      "Core Overload — at 30% HP, enters berserk mode with 2 actions per turn"
+    ],
+    "immuneToDoT": false,
+    "requiredUtility": "Dispel",
+    "recommendedCounters": ["heinrich", "plume", "holden"],
+    "advantageAffinity": "Reason",
+    "notes": "Do not waste Def Break skills until Iron Plating falls below 70%. Bring SPD restoration support to counter Mech Stampede. Heinrich or Plume can dispel Core Overload buffs in berserk phase."
+  }
+]
