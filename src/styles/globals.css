@@ -433,40 +433,37 @@ html, body, #root { height: 100%; }
   to   { opacity: 1; transform: translateY(0)     scale(1); }
 }
 
-/* Grid row-break wrapper */
+/* Grid inline wrapper — spans 3 columns, sits right after the selected card */
 .animus-detail-wrap {
-  grid-column: 1 / -1;
+  grid-column: span 3;
+  align-self: start;
   animation: cardDrop 0.26s cubic-bezier(.3,1.1,.4,1) both;
+  position: relative;
 }
 
-/* Stage: ambient glow behind the card */
+/* Stage: just the ambient glow, no extra padding */
 .card-stage {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 32px 20px;
   position: relative;
-  background:
-    radial-gradient(ellipse 340px 260px at 50% 50%, var(--aff-bg, rgba(124,106,247,.08)), transparent);
+  display: inline-block;
 }
 
 .card-stage__close {
   position: absolute;
-  top: 12px;
-  right: 16px;
+  top: -10px;
+  right: -10px;
   background: var(--bg-raised);
   border: 1px solid var(--border-md);
   border-radius: 50%;
-  width: 28px;
-  height: 28px;
+  width: 24px;
+  height: 24px;
   color: var(--tx-2);
-  font-size: 11px;
+  font-size: 10px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: background 0.12s, color 0.12s;
-  z-index: 10;
+  z-index: 30;
 }
 
 .card-stage__close:hover { background: var(--bg-pop); color: var(--tx-1); }
