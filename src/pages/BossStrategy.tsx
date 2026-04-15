@@ -11,13 +11,10 @@ function CounterChip({ animusId }: { animusId: string }) {
   if (!unit) return null;
   return (
     <div className="counter-chip">
-      <img
-        src={`/assets/animus/${unit.imageFile}`}
-        alt={unit.name}
-      />
+      <img src={`/assets/animus/${unit.imageFile}`} alt={unit.name} />
       <div>
-        <div style={{ fontWeight: 600 }}>{unit.name}</div>
-        <div style={{ fontSize: 10, color: 'var(--text-muted)' }}>{unit.primaryRole}</div>
+        <div style={{ fontWeight: 700, fontSize: 12 }}>{unit.name}</div>
+        <div style={{ fontSize: 10, color: 'var(--tx-3)', marginTop: 1 }}>{unit.primaryRole}</div>
       </div>
     </div>
   );
@@ -38,29 +35,27 @@ export default function BossStrategy() {
               <div className="boss-card__name">{boss.name}</div>
               <div className="boss-card__badges">
                 <AffinityBadge affinity={boss.affinity} />
-                {boss.immuneToDoT && (
-                  <span className="dot-immune-badge">DoT Immune</span>
-                )}
+                {boss.immuneToDoT && <span className="dot-immune-badge">DoT Immune</span>}
                 <span className="utility-badge">Needs {boss.requiredUtility}</span>
-                <span style={{ fontSize: 12, color: 'var(--text-muted)', alignSelf: 'center' }}>
-                  {boss.difficultyTiers.join(' · ')}
-                </span>
+                {boss.difficultyTiers.map((d) => (
+                  <span key={d} className="difficulty-badge">{d}</span>
+                ))}
               </div>
             </div>
             <div style={{ textAlign: 'right' }}>
-              <div style={{ fontSize: 11, color: 'var(--text-muted)', marginBottom: 4 }}>Bring</div>
+              <div style={{ fontSize: 10, color: 'var(--tx-3)', marginBottom: 5 }}>Advantage</div>
               <AffinityBadge affinity={boss.advantageAffinity} />
             </div>
           </div>
 
           <div className="boss-card__body">
-            <div>
+            <div className="boss-card__section">
               <div className="boss-card__section-label">Mechanics</div>
               <ul className="boss-card__mechanics">
                 {boss.mechanics.map((m, i) => <li key={i}>{m}</li>)}
               </ul>
             </div>
-            <div>
+            <div className="boss-card__section">
               <div className="boss-card__section-label">Recommended Counters</div>
               <div className="boss-card__counters">
                 {boss.recommendedCounters.map((id) => (

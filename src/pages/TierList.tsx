@@ -5,20 +5,25 @@ import { AnimusCard } from '@/components/AnimusCard';
 import { SPEED_BREAKPOINTS } from '@/data/constants';
 
 const allAnimus = animusData as Animus[];
-const TIERS: Tier[]     = ['SSS', 'SS', 'S', 'A'];
+const TIERS: Tier[] = ['SSS', 'SS', 'S', 'A'];
 const AFFINITIES: Affinity[] = ['Reason', 'Hollow', 'Odd', 'Constant', 'Disorder'];
+
+const TIER_LABELS: Record<Tier, string> = {
+  SSS: 'Meta Dominant',
+  SS:  'Top Tier',
+  S:   'High Value',
+  A:   'Viable',
+};
 
 export default function TierList() {
   const [affinityFilter, setAffinityFilter] = useState<Affinity | null>(null);
   const [speedFilter,    setSpeedFilter]    = useState<number | null>(null);
 
-  const filtered = useMemo(() => {
-    return allAnimus.filter((a) => {
-      if (affinityFilter && a.affinity !== affinityFilter) return false;
-      if (speedFilter    && a.baseSpeed < speedFilter)     return false;
-      return true;
-    });
-  }, [affinityFilter, speedFilter]);
+  const filtered = useMemo(() => allAnimus.filter((a) => {
+    if (affinityFilter && a.affinity !== affinityFilter) return false;
+    if (speedFilter    && a.baseSpeed < speedFilter)     return false;
+    return true;
+  }), [affinityFilter, speedFilter]);
 
   const byTier = useMemo(() => {
     const map = new Map<Tier, Animus[]>();
@@ -31,13 +36,13 @@ export default function TierList() {
     <div>
       <div className="page-header">
         <h1>Animus Tier List</h1>
-        <p>March 2026 meta · {filtered.length} units</p>
+        <p>March 2026 meta · {filtered.length} of {allAnimus.length} units shown</p>
       </div>
 
       <div className="filter-bar">
         <div className="filter-bar__group">
           <button
-            className={`filter-btn${affinityFilter === null ? ' filter-btn--active' : ''}`}
+            className={`filter-btn${!affinityFilter ? ' filter-btn--active' : ''}`}
             onClick={() => setAffinityFilter(null)}
           >
             All
@@ -48,11 +53,7 @@ export default function TierList() {
               className={`filter-btn filter-btn--${aff}${affinityFilter === aff ? ' filter-btn--active' : ''}`}
               onClick={() => setAffinityFilter(affinityFilter === aff ? null : aff)}
             >
-              <img
-                src={`/assets/affinities/${aff.toUpperCase()}.webp`}
-                alt={aff}
-                style={{ width: 14, height: 14, objectFit: 'contain' }}
-              />
+              <img src={`/assets/affinities/${aff.toUpperCase()}.webp`} alt={aff} />
               {aff}
             </button>
           ))}
@@ -62,7 +63,7 @@ export default function TierList() {
 
         <div className="filter-bar__group">
           <button
-            className={`filter-btn${speedFilter === null ? ' filter-btn--active' : ''}`}
+            className={`filter-btn${!speedFilter ? ' filter-btn--active' : ''}`}
             onClick={() => setSpeedFilter(null)}
           >
             All SPD
@@ -73,7 +74,7 @@ export default function TierList() {
               className={`filter-btn ${bp.cssClass}${speedFilter === bp.threshold ? ' filter-btn--active' : ''}`}
               onClick={() => setSpeedFilter(speedFilter === bp.threshold ? null : bp.threshold)}
             >
-              {bp.threshold}+ <span style={{ fontSize: 10, opacity: 0.7 }}>{bp.label}</span>
+              {bp.threshold}+
             </button>
           ))}
         </div>
@@ -83,24 +84,33 @@ export default function TierList() {
         const units = byTier.get(tier) ?? [];
         if (units.length === 0) return null;
         return (
-          <div key={tier} className="tier-section">
-            <div className="tier-section__header">
-              <span className={`tier-badge tier-badge--${tier}`}>{tier}</span>
-              <span className="tier-section__label">
-                {tier === 'SSS' ? 'Meta Dominant' :
-                 tier === 'SS'  ? 'Top Tier' :
-                 tier === 'S'   ? 'High Value' : 'Viable'}
-              </span>
-              <span className="tier-section__count">{units.length} units</span>
+          <div key={tier} className="tier-row">
+            <div className={`tier-row__label tier-row__label--${tier}`}>
+              <div style={{ writingMode: 'vertical-rl', transform: 'rotate(180deg)', letterSpacing: 3, fontSize: 13 }}>
+                {tier}
+              </div>
             </div>
-            <div className="tier-section__grid">
+            <div className="tier-row__units">
               {units.map((a) => (
-                <AnimusCard key={a.id} animus={a} />
+                <AnimusCard key={a.id} animus={a} showTier={false} />
               ))}
             </div>
           </div>
         );
       })}
+
+      {/* Legend */}
+      <div style={{ display: 'flex', gap: 16, marginTop: 24, flexWrap: 'wrap' }}>
+        {TIERS.map((tier) => (
+          <div key={tier} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <span className={`tier-badge tier-badge--${tier}`}>{tier}</span>
+            <span style={{ fontSize: 12, color: 'var(--tx-2)' }}>{TIER_LABELS[tier]}</span>
+          </div>
+        ))}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: 'var(--tx-3)', marginLeft: 8 }}>
+          <span style={{ color: '#f5c842', fontWeight: 700, fontSize: 11 }}>SP</span> Shadow Print required
+        </div>
+      </div>
     </div>
   );
 }

@@ -1,35 +1,43 @@
 import { useEffect, useRef, useState } from 'react';
 import type { Animus } from '@/types';
-import { AffinityBadge } from './AffinityBadge';
-import { SpeedIndicator } from './SpeedIndicator';
 
 interface Props {
   animus: Animus;
   onClick?: (animus: Animus) => void;
   selected?: boolean;
+  /** Show tier pin — hide in tier rows since tier is implied */
+  showTier?: boolean;
 }
 
-export function AnimusCard({ animus, onClick, selected }: Props) {
-  const imgRef  = useRef<HTMLImageElement>(null);
-  const [inView, setInView]   = useState(false);
-  const [loaded, setLoaded]   = useState(false);
+const AFF_COLORS: Record<string, string> = {
+  Reason:   'var(--c-reason)',
+  Hollow:   'var(--c-hollow)',
+  Odd:      'var(--c-odd)',
+  Constant: 'var(--c-constant)',
+  Disorder: 'var(--c-disorder)',
+};
+
+export function AnimusCard({ animus, onClick, selected, showTier = true }: Props) {
+  const imgRef = useRef<HTMLImageElement>(null);
+  const [inView, setInView] = useState(false);
+  const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
     const el = imgRef.current;
     if (!el) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) { setInView(true); observer.disconnect(); } },
-      { rootMargin: '120px' }
+    const obs = new IntersectionObserver(
+      ([e]) => { if (e.isIntersecting) { setInView(true); obs.disconnect(); } },
+      { rootMargin: '150px' }
     );
-    observer.observe(el);
-    return () => observer.disconnect();
+    obs.observe(el);
+    return () => obs.disconnect();
   }, []);
 
   return (
     <div
       className={`animus-card${selected ? ' animus-card--selected' : ''}`}
       onClick={() => onClick?.(animus)}
-      style={selected ? { borderColor: 'var(--accent)' } : undefined}
+      title={`${animus.name} · ${animus.affinity} · ${animus.baseSpeed} SPD`}
     >
       <img
         ref={imgRef}
@@ -38,19 +46,28 @@ export function AnimusCard({ animus, onClick, selected }: Props) {
         className={`animus-card__portrait ${loaded ? 'animus-card__portrait--loaded' : 'animus-card__portrait--loading'}`}
         onLoad={() => setLoaded(true)}
       />
-      <div className="animus-card__body">
-        <div className="animus-card__name" title={animus.name}>{animus.name}</div>
-        <div className="animus-card__meta">
-          <span className={`tier-badge tier-badge--${animus.tier}`}>{animus.tier}</span>
-          <AffinityBadge affinity={animus.affinity} showIcon={false} />
+
+      {/* Affinity dot — top right */}
+      <div
+        className="animus-card__aff-pin"
+        style={{ background: AFF_COLORS[animus.affinity] }}
+      />
+
+      {/* Tier — top left (optional) */}
+      {showTier && (
+        <div className={`animus-card__tier-pin animus-card__tier-pin--${animus.tier}`}>
+          {animus.tier}
         </div>
-        <div className="animus-card__footer">
-          <SpeedIndicator speed={animus.baseSpeed} />
-          {animus.isShadowPrintRequired && (
-            <span className="shadow-print-badge">★ SP</span>
-          )}
-        </div>
-        <div className="animus-card__role">{animus.primaryRole}</div>
+      )}
+
+      {/* Shadow Print indicator */}
+      {animus.isShadowPrintRequired && (
+        <div className="animus-card__sp">SP</div>
+      )}
+
+      {/* Name overlay */}
+      <div className="animus-card__overlay">
+        <div className="animus-card__name">{animus.name}</div>
       </div>
     </div>
   );
