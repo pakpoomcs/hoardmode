@@ -1,0 +1,13 @@
+name = "hoardmode"
+compatibility_date = "2024-12-18"
+
+# Cloudflare Pages + Workers integration
+pages_build_output_dir = "./dist"
+
+[[kv_namespaces]]
+binding = "PRESETS"
+id = "PLACEHOLDER_KV_ID"          # replace after: wrangler kv namespace create PRESETS
+preview_id = "PLACEHOLDER_KV_PREVIEW_ID"  # replace after: wrangler kv namespace create PRESETS --preview
+
+[vars]
+ENVIRONMENT = "production"
